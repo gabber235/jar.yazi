@@ -115,15 +115,17 @@ class JarHelperTest(unittest.TestCase):
 
         self.assertEqual(self.failure_code(lambda: jar_helper.build_index(archive, self.limits)), "invalid_jar")
 
-    def test_rejects_traversal_absolute_backslash_and_empty_segments(self) -> None:
-        for entry in ("../escape", "/absolute", "dir\\file", "a//b"):
+    def test_rejects_traversal_absolute_and_empty_segments(self) -> None:
+        for entry in ("../escape", "/absolute", "a//b"):
             with self.subTest(entry=entry):
-                if entry == "dir\\file":
-                    archive = self.jar([("dir/file", b"content")], name=hash_name(entry))
-                    archive.write_bytes(archive.read_bytes().replace(b"dir/file", b"dir\\file"))
-                else:
-                    archive = self.jar([(entry, b"content")], name=hash_name(entry))
+                archive = self.jar([(entry, b"content")], name=hash_name(entry))
                 self.assertEqual(self.failure_code(lambda: jar_helper.build_index(archive, self.limits)), "unsafe_path")
+
+    def test_rejects_backslash_path(self) -> None:
+        self.assertEqual(
+            self.failure_code(lambda: jar_helper.normalize_path("dir\\file", is_directory=False)),
+            "unsafe_path",
+        )
 
     def test_rejects_duplicate_file_entries(self) -> None:
         archive = self.root / "duplicate.jar"
