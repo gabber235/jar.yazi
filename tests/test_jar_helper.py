@@ -5,12 +5,14 @@ import hashlib
 import io
 import os
 from pathlib import Path
+import sys
 import tempfile
 import unittest
 import warnings
 import zipfile
 
-import jar_helper
+sys.path.insert(0, os.fspath(Path(__file__).parents[1] / "assets"))
+import jar_helper  # noqa: E402
 
 
 class JarHelperTest(unittest.TestCase):

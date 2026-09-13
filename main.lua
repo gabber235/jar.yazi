@@ -71,7 +71,7 @@ end
 
 local function helper_path(self)
 	local plugin = self._id:match "^[^.]+" or self._id
-	return tostring(rt.path.config_dir:join("plugins/" .. plugin .. ".yazi/jar_helper.py"))
+	return tostring(rt.path.config_dir:join("plugins/" .. plugin .. ".yazi/assets/jar_helper.py"))
 end
 
 local function cache_path()
